@@ -13,16 +13,17 @@ export PASS_FROM_VAULT="$(retry 5 5 vault read -field=password secret/kibana-iss
 export HOST_FROM_VAULT="$(retry 5 5 vault read -field=host secret/kibana-issues/prod/coverage/elasticsearch)"
 
 echo "--- downloadPrevSha"
-export previousSha=(.buildkite/scripts/steps/code_coverage/ingest/downloadPrevSha.sh)
+export previousSha=$(.buildkite/scripts/steps/code_coverage/ingest/downloadPrevSha.sh)
 echo $previousSha
 echo "--- uploadPrevSha"
 #.buildkite/scripts/steps/code_coverage/ingest/uploadPrevSha.sh
-echo "--- generateTeamAssignments"
-.buildkite/scripts/steps/code_coverage/ingest/generateTeamAssignments.sh
 
 .buildkite/scripts/bootstrap.sh
 
 node scripts/build_kibana_platform_plugins.js --no-cache
+
+echo "--- generateTeamAssignments"
+.buildkite/scripts/steps/code_coverage/ingest/generateTeamAssignments.sh
 
 export timestamp=$(date +"%Y-%m-%dT%H:%M:%S:00Z")
 
