@@ -13,15 +13,18 @@ export PASS_FROM_VAULT="$(retry 5 5 vault read -field=password secret/kibana-iss
 export HOST_FROM_VAULT="$(retry 5 5 vault read -field=host secret/kibana-issues/prod/coverage/elasticsearch)"
 
 echo "--- downloadPrevSha"
-.buildkite/scripts/steps/code_coverage/ingest/downloadPrevSha.sh
+export previousSha=(.buildkite/scripts/steps/code_coverage/ingest/downloadPrevSha.sh)
+echo $previousSha
 echo "--- uploadPrevSha"
-.buildkite/scripts/steps/code_coverage/ingest/uploadPrevSha.sh
+#.buildkite/scripts/steps/code_coverage/ingest/uploadPrevSha.sh
+echo "--- generateTeamAssignments"
+.buildkite/scripts/steps/code_coverage/ingest/generateTeamAssignments.sh
 
 .buildkite/scripts/bootstrap.sh
 
 node scripts/build_kibana_platform_plugins.js --no-cache
 
-timestamp=$(date +"%Y-%m-%dT%H:%M:%S:00Z")
+export timestamp=$(date +"%Y-%m-%dT%H:%M:%S:00Z")
 
 # download coverage arctifacts
 buildkite-agent artifact download target/kibana-coverage/jest/* . --build "${KIBANA_BUILD_ID:-$BUILDKITE_BUILD_ID}"
@@ -57,6 +60,5 @@ ls -laR target/kibana-coverage/
 # upload upload coverage static site
 #.buildkite/scripts/steps/code_coverage/ingest/uploadStaticSite.sh
 # ingest results to Kibana stats cluster
-previousSha=abcde1234
-BUILD_NUMBER=12345
+export BUILD_NUMBER=12345
 #.src/dev/code_coverage/shell_scripts/generate_team_assignments_and_ingest_coverage.sh 'code-coverage' ${BUILD_NUMBER} '${BUILD_URL}' '${previousSha}' 'src/dev/code_coverage/ingest_coverage/team_assignment/team_assignments.txt'

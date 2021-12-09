@@ -30,10 +30,10 @@ BUFFER_SIZE=500
 export BUFFER_SIZE
 
 # Build team assignments dat file
-node scripts/generate_team_assignments.js --verbose --src .github/CODEOWNERS --dest $TEAM_ASSIGN_PATH
+#node scripts/generate_team_assignments.js --verbose --src .github/CODEOWNERS --dest $TEAM_ASSIGN_PATH
 
 # Need to override COVERAGE_INGESTION_KIBANA_ROOT since json file has original intake worker path
-export COVERAGE_INGESTION_KIBANA_ROOT=/dev/shm/workspace/kibana
+# export COVERAGE_INGESTION_KIBANA_ROOT=/dev/shm/workspace/kibana
 
 for x in functional jest; do
   echo "### Ingesting coverage for ${x}"

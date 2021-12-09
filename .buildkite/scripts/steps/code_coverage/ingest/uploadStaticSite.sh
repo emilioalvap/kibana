@@ -2,18 +2,13 @@
 
 set -euo pipefail
 
-# def uploadPrefix = "gs://elastic-bekitzur-kibana-coverage-live/"
-# def uploadPrefixWithTimeStamp = "${uploadPrefix}${timestamp}/"
+uploadPrefix="gs://elastic-bekitzur-kibana-coverage-live/"
+uploadPrefixWithTimeStamp="${uploadPrefix}${timestamp}/"
 
-# [
-#   'src/dev/code_coverage/www/index.html',
-#   'src/dev/code_coverage/www/404.html'
-# ].each { uploadWithVault(uploadPrefix, it) }
+for x in 'src/dev/code_coverage/www/index.html' 'src/dev/code_coverage/www/404.html'; do
+    gsutil -m cp -r -a public-read -z js,css,html ${x} '${uploadPrefix}'
+done
 
-# [
-#   'target/kibana-coverage/functional-combined',
-#   'target/kibana-coverage/jest-combined',
-# ].each { uploadWithVault(uploadPrefixWithTimeStamp, it) }
-
-export CI_STATS_TOKEN="$(retry 5 5 vault read -field=api_token secret/kibana-issues/dev/kibana_ci_stats)"
-
+for x in 'target/kibana-coverage/functional-combined' 'target/kibana-coverage/jest-combined'; do
+    gsutil -m cp -r -a public-read -z js,css,html ${x} '${uploadPrefixWithTimeStamp}'
+done
