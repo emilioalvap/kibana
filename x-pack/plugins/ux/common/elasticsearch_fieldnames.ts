@@ -13,6 +13,8 @@ export const AGENT = 'agent';
 export const AGENT_NAME = 'agent.name';
 export const AGENT_VERSION = 'agent.version';
 
+export const PROCESSOR_EVENT = 'processor.event';
+
 export const URL_FULL = 'url.full';
 export const USER_AGENT_NAME = 'user_agent.name';
 

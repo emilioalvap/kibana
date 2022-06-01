@@ -4,7 +4,10 @@
  * 2.0; you may not use this file except in compliance with the Elastic License
  * 2.0.
  */
-import { TRANSACTION_TYPE } from '../../../common/elasticsearch_fieldnames';
+import {
+  TRANSACTION_TYPE,
+  PROCESSOR_EVENT,
+} from '../../../common/elasticsearch_fieldnames';
 import { ProcessorEvent } from '../../../common/processor_event';
 import { TRANSACTION_PAGE_LOAD } from '../../../common/transaction_types';
 import { SetupUX } from '../../../typings/ui_filters';
@@ -30,6 +33,7 @@ export function getRumPageLoadTransactionsProjection({
     filter: [
       ...rangeQuery(start, end),
       { term: { [TRANSACTION_TYPE]: TRANSACTION_PAGE_LOAD } },
+      { terms: { [PROCESSOR_EVENT]: [ProcessorEvent.transaction] } },
       ...(checkFetchStartFieldExists
         ? [
             {
@@ -56,9 +60,6 @@ export function getRumPageLoadTransactionsProjection({
   };
 
   return {
-    apm: {
-      events: [ProcessorEvent.transaction],
-    },
     body: {
       query: {
         bool,

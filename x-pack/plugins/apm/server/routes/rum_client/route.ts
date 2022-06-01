@@ -8,7 +8,6 @@ import * as t from 'io-ts';
 import { Logger } from '@kbn/core/server';
 import { isoToEpochRt } from '@kbn/io-ts-utils';
 import { setupRequest, Setup } from '../../lib/helpers/setup_request';
-import { getClientMetrics } from './get_client_metrics';
 import { getJSErrors } from './get_js_errors';
 import { getLongTaskMetrics } from './get_long_task_metrics';
 import { getPageLoadDistribution } from './get_page_load_distribution';
@@ -60,36 +59,6 @@ const uxQueryRt = t.intersection([
   rangeRt,
   t.partial({ urlQuery: t.string, percentile: t.string }),
 ]);
-
-const rumClientMetricsRoute = createApmServerRoute({
-  endpoint: 'GET /internal/apm/ux/client-metrics',
-  params: t.type({
-    query: uxQueryRt,
-  }),
-  options: { tags: ['access:apm'] },
-  handler: async (
-    resources
-  ): Promise<{
-    pageViews: { value: number };
-    totalPageLoadDuration: { value: number };
-    backEnd: { value: number };
-    frontEnd: { value: number };
-  }> => {
-    const setup = await setupUXRequest(resources);
-
-    const {
-      query: { urlQuery, percentile, start, end },
-    } = resources.params;
-
-    return getClientMetrics({
-      setup,
-      urlQuery,
-      percentile: percentile ? Number(percentile) : undefined,
-      start,
-      end,
-    });
-  },
-});
 
 const rumPageLoadDistributionRoute = createApmServerRoute({
   endpoint: 'GET /internal/apm/ux/page-load-distribution',
@@ -376,7 +345,6 @@ async function setupUXRequest<TParams extends SetupUXRequestParams>(
 }
 
 export const rumRouteRepository = {
-  ...rumClientMetricsRoute,
   ...rumPageLoadDistributionRoute,
   ...rumPageLoadDistBreakdownRoute,
   ...rumPageViewsTrendRoute,
