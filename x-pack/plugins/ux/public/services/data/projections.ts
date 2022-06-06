@@ -5,7 +5,6 @@
  * 2.0.
  */
 import { QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
-import { TRANSACTION_TYPE } from '../../../common/elasticsearch_fieldnames';
 import { ProcessorEvent } from '../../../common/processor_event';
 import { TRANSACTION_PAGE_LOAD } from '../../../common/transaction_types';
 import { SetupUX } from '../../../typings/ui_filters';
@@ -13,6 +12,7 @@ import { getEsFilter } from './get_es_filter';
 import { rangeQuery } from './range_query';
 import {
   AGENT_NAME,
+  TRANSACTION_TYPE,
   SERVICE_LANGUAGE_NAME,
   PROCESSOR_EVENT,
 } from '../../../common/elasticsearch_fieldnames';
@@ -36,6 +36,7 @@ export function getRumPageLoadTransactionsProjection({
     filter: [
       ...rangeQuery(start, end),
       { term: { [TRANSACTION_TYPE]: TRANSACTION_PAGE_LOAD } },
+      { terms: { [PROCESSOR_EVENT]: [ProcessorEvent.transaction] } },
       ...(checkFetchStartFieldExists
         ? [
             {
@@ -62,9 +63,6 @@ export function getRumPageLoadTransactionsProjection({
   };
 
   return {
-    apm: {
-      events: [ProcessorEvent.transaction],
-    },
     body: {
       query: {
         bool,

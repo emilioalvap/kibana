@@ -1,14 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+<<<<<<< HEAD
 exports[`rum client dashboard queries fetches client metrics 1`] = `
 Object {
   "apm": Object {
     "events": Array [
       "transaction",
+=======
+exports[`rum client dashboard queries fetches js errors 1`] = `
+Object {
+  "apm": Object {
+    "events": Array [
+      "error",
+>>>>>>> 46cc19a87c6... Migrate client metrics from APM to UX
     ],
   },
   "body": Object {
     "aggs": Object {
+<<<<<<< HEAD
       "hasFetchStartField": Object {
         "aggs": Object {
           "backEnd": Object {
@@ -30,14 +39,67 @@ Object {
               },
               "percents": Array [
                 50,
+=======
+      "errors": Object {
+        "aggs": Object {
+          "bucket_truncate": Object {
+            "bucket_sort": Object {
+              "from": 0,
+              "size": 5,
+            },
+          },
+          "impactedPages": Object {
+            "aggs": Object {
+              "pageCount": Object {
+                "cardinality": Object {
+                  "field": "transaction.id",
+                },
+              },
+            },
+            "filter": Object {
+              "term": Object {
+                "transaction.type": "page-load",
+              },
+            },
+          },
+          "sample": Object {
+            "top_hits": Object {
+              "_source": Array [
+                "error.exception.message",
+                "error.exception.type",
+                "error.grouping_key",
+                "@timestamp",
+              ],
+              "size": 1,
+              "sort": Array [
+                Object {
+                  "@timestamp": "desc",
+                },
+>>>>>>> 46cc19a87c6... Migrate client metrics from APM to UX
               ],
             },
           },
         },
+<<<<<<< HEAD
         "filter": Object {
           "exists": Object {
             "field": "transaction.marks.navigationTiming.fetchStart",
           },
+=======
+        "terms": Object {
+          "field": "error.grouping_key",
+          "size": 500,
+        },
+      },
+      "totalErrorGroups": Object {
+        "cardinality": Object {
+          "field": "error.grouping_key",
+        },
+      },
+      "totalErrorPages": Object {
+        "cardinality": Object {
+          "field": "transaction.id",
+>>>>>>> 46cc19a87c6... Migrate client metrics from APM to UX
         },
       },
     },
@@ -55,12 +117,20 @@ Object {
           },
           Object {
             "term": Object {
+<<<<<<< HEAD
               "transaction.type": "page-load",
+=======
+              "agent.name": "rum-js",
+>>>>>>> 46cc19a87c6... Migrate client metrics from APM to UX
             },
           },
           Object {
             "term": Object {
+<<<<<<< HEAD
               "service.environment": "staging",
+=======
+              "service.language.name": "javascript",
+>>>>>>> 46cc19a87c6... Migrate client metrics from APM to UX
             },
           },
         ],
